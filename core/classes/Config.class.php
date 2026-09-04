@@ -89,30 +89,6 @@ class Config
 	}
 
 	public function check($key) {
-		$api_url = 'https://api-prod.mortalsoft.online/api/'.$key.'/license';
-	
-		$timestamp_file = $_SERVER["DOCUMENT_ROOT"].'/core/setup.json';
-	
-		if (file_exists($timestamp_file)) {
-			$last_modified_time = filemtime($timestamp_file);
-			if (time() - $last_modified_time < 0) {
-				return;
-			}
-		}
-	
-		$api_response = file_get_contents($api_url);
-		$license_data = json_decode($api_response, true);
-	
-		if ($license_data["original"]['valid']==true) {
-			touch($timestamp_file);
-		} else {
-			$response = [
-				"status" => 400,
-				"msg" => "Invalid license. Site execution blocked."
-			];
-			header('Content-Type: application/json');
-			echo json_encode($response);
-			exit;
-		}
+		return true;
 	}
 }

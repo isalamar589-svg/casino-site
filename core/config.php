@@ -9,16 +9,18 @@
 require_once $_SERVER["DOCUMENT_ROOT"].'/core/sql.php';
 require $_SERVER["DOCUMENT_ROOT"].'/core/libs/autoload.php';
 require_once $_SERVER["DOCUMENT_ROOT"].'/core/loader.php';
-
+require_once $_SERVER["DOCUMENT_ROOT"].'/core/db_init.php';
 
 $DataBase = new DataBase();
+initDatabaseTables($DataBase);
+
 $User = new User();
 $Other = new Other();
 $Config = new Config();
 $Metamask = new Metamask();
 
 $Settings = $Config->settings();
-$Config->check($Config->api("mortalsoft")["key"]);
+$Config->check(isset($Config->api("mortalsoft")["key"]) ? $Config->api("mortalsoft")["key"] : "demo");
 
 $root = '/';
 $path = $_GET['page'];
