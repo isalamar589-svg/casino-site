@@ -15,6 +15,8 @@ RUN apt-get update && apt-get install -y \
     && apt-get install -y nodejs \
     && npm install -g pm2 \
     && a2enmod rewrite \
+    && echo "ServerName localhost" >> /etc/apache2/apache2.conf \
+    && sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /var/www/html
@@ -25,9 +27,9 @@ COPY . /var/www/html/
 # Install Node dependencies in server directory
 RUN cd /var/www/html/server && npm install --production
 
-# Setup entrypoint script
+# Setup entrypoint script and remove Windows carriage returns
 COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+RUN sed -i 's/\r$//' /entrypoint.sh && chmod +x /entrypoint.sh
 
 # Permissions
 RUN chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html
