@@ -25,12 +25,13 @@ COPY . /var/www/html/
 # Install Node dependencies in server directory
 RUN cd /var/www/html/server && npm install --production
 
+# Setup entrypoint script
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 # Permissions
 RUN chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html
 
-# Create startup script
-RUN printf '#!/bin/bash\nPORT=\nsed -i "s/Listen .*/Listen /" /etc/apache2/ports.conf\nsed -i "s/<VirtualHost \\*:[0-9]*>/<VirtualHost *:>/" /etc/apache2/sites-available/000-default.conf\ncd /var/www/html/server && pm2 start server.js --name "casino-server"\nexec apache2-foreground\n' > /start.sh && chmod +x /start.sh
-
 EXPOSE 80
 
-CMD ["/start.sh"]
+CMD ["/entrypoint.sh"]
