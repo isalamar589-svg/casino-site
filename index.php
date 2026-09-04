@@ -1,4 +1,7 @@
 <?php
+if (!ob_get_level()) {
+    ob_start();
+}
 require_once $_SERVER["DOCUMENT_ROOT"].'/core/config.php';
 
 $default_page = "home";
