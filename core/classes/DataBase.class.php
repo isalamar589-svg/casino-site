@@ -16,6 +16,14 @@ class DataBase {
     public function __construct() {
         $port = defined('DB_PORT') ? DB_PORT : 3306;
         $DSN = 'mysql:host=' . $this->Host . ';port=' . $port . ';dbname=' . $this->DB_Name;
+        
+        $ssl_ca = null;
+        if (file_exists('/etc/ssl/certs/ca-certificates.crt')) {
+            $ssl_ca = '/etc/ssl/certs/ca-certificates.crt';
+        } elseif (file_exists('/etc/pki/tls/certs/ca-bundle.crt')) {
+            $ssl_ca = '/etc/pki/tls/certs/ca-bundle.crt';
+        }
+
         $Options = array(
             PDO::ATTR_EMULATE_PREPARES => true,
             PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
@@ -23,6 +31,10 @@ class DataBase {
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false
         );
+
+        if ($ssl_ca) {
+            $Options[PDO::MYSQL_ATTR_SSL_CA] = $ssl_ca;
+        }
 
         try {
             $this->DBH = new PDO($DSN, $this->User, $this->Pass, $Options);

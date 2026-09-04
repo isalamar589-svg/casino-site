@@ -1,15 +1,17 @@
-﻿FROM php:8.2-apache
+FROM php:8.2-apache
 
 # Install system dependencies, Node.js and PM2
 RUN apt-get update && apt-get install -y \
     curl \
     git \
     unzip \
+    ca-certificates \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
     libzip-dev \
     zip \
+    && update-ca-certificates \
     && docker-php-ext-install pdo_mysql mysqli mbstring gd zip \
     && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
     && apt-get install -y nodejs \
